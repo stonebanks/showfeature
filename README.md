@@ -1,7 +1,7 @@
 ## ShowFeature ##
 
 A library to find distinguishable features in a tv show filename as it
-was downloaded (e.g. <name\>.S<season\>E<episode\>.hdtv-<team\>.avi)
+was downloaded (e.g. \<name\>.S\<season\>E\<episode\>.hdtv-\<team\>.avi)
 
 
 **Author :** Allan Seymour
