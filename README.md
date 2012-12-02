@@ -1,14 +1,14 @@
 ## ShowFeature ##
 
 A library to find distinguishable features in a tv show filename as it
-was downloaded (e.g. %name%.S%season%E%episode%.hdtv-%team%.avi)
+was downloaded (e.g. <name\>.S<season\>E<episode\>.hdtv-<team\>.avi)
 
 
-** Author :** Allan Seymour
+**Author :** Allan Seymour
 
-** Version :** 0.0.1
+**Version :** 0.0.1
 
-** Release Date :** December 02,2012
+**Release Date :** December 02,2012
 
-** Copyright :** MIT License
+**Copyright :** MIT License
 
