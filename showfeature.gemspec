@@ -3,10 +3,13 @@ require File.expand_path('../lib/showfeature/version', __FILE__)
 Gem::Specification.new do |spec|
   spec.name = "showfeature"
   spec.version= ShowFeature::VERSION
-  spec.summary = "Find distinguishable features in a tv show filename as it was downloaded (e.g. <name>.S<season>E<episode>.hdtv-<team>.avi)"
+  spec.summary = 'This library allows to find the relevant features in a tv show filename (e.g. [name].S[season]E[episode].hdtv-[team].avi)'
+  spec.description = "This library allows to find the relevant features in a tv show filename (e.g. [name].S[season]E[episode].hdtv-[team].avi)"
+  spec.homepage = "https://github.com/stonebanks/showfeature/"
   spec.author = "Allan Seymour"
-  sepc.email = "banks.the.megalithic.stone@gmail.com"
+  spec.email = "banks.the.megalithic.stone@gmail.com"
   spec.require_paths = ['lib']
-  spec.files = `git ls-files`
+  spec.files = `git ls-files`.split("\n")
   spec.required_ruby_version = '>= 1.9.1'
+  spec.test_files = `git ls-files -- spec `.split("\n")
 end

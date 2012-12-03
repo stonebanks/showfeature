@@ -6,7 +6,7 @@ require 'showfeature'
 require 'erb'
 
 Output = Struct.new(:name, :episode, :season, :team, :raw_name)
-#include ShowFeature
+
 def create_a_show
   t = ([('a'..'z'),(0..9)].map{|i| i.to_a}).flatten
   r = (Array.new(t)<<['(',')','.']).flatten
@@ -23,39 +23,47 @@ def create_a_show
   output
 end
 
-
-
-
-describe ShowFeature::Parser do
+describe ShowFeature::Processor do
   before do
     @output = create_a_show
     @show = @output.raw_name
    end
  
-  it "can be created with no arguments" do 
-    ShowFeature::Parser.new.must_be_instance_of ShowFeature::Parser
+  it "can be created with a string argument" do 
+    ShowFeature::Processor.new(@show).raw_name.must_equal @show
   end
 
-  it "can be created with a string argument" do 
-    ShowFeature::Parser.new(@show).raw_name.must_equal @show
+  it "must raised an ArgumentError if mime type does not match a video file type" do 
+    result = lambda{ ShowFeature::Processor.new('show')}
+    result.must_raise ShowFeature::ArgumentError
+    error = result.call rescue $!
+    error.message.must_equal 'argument does not match a video file type'   
   end
+
 
   describe "when asked to be hashed" do 
     before do 
-      @sf = ShowFeature::Parser.new(@show)
+      @sf = ShowFeature::Processor.new(@show)
     end
-    it "must returns an hash" do 
+    it "must return an hash" do 
       @sf.parse
       @sf.to_hsh.must_be_instance_of Hash
     end
-    it "must returns an empty hash if showfeature is not parsed yet" do
+    it "must filled the hash correctly " do
+      @sf.parse
+      @sf.to_hsh.must_equal({ :name => @output.name.gsub('.', ' '),
+        :season => @output.season,
+        :episode => @output.episode,
+        :team => @output.team })
+    end
+    it "must return an empty hash if showfeature is not parsed yet" do
       @sf.to_hsh.must_be_empty
     end
   end
  
   describe "when asked to parse the show name" do 
     before do 
-      @sf = ShowFeature::Parser.new(@show)
+      @sf = ShowFeature::Processor.new(@show)
       @sf.parse
     end
     it "must retrieve the element" do 
@@ -71,7 +79,7 @@ describe ShowFeature::Parser do
 
   describe "when asked if parsed" do
     before do
-      @sf = ShowFeature::Parser.new(@show)
+      @sf = ShowFeature::Processor.new(@show)
     end
     it "must return true if parsed" do
       @sf.parsed?.wont_equal true
@@ -82,7 +90,7 @@ describe ShowFeature::Parser do
 
   describe "when asked to replace an element" do 
     before do 
-      @sf = ShowFeature::Parser.new(@show)
+      @sf = ShowFeature::Processor.new(@show)
     end
     it "must replace raw_name by default when a string is passed" do 
       @sf.parse
@@ -106,15 +114,21 @@ describe ShowFeature::Parser do
       error = result.call rescue $!
       error.message.must_equal 'argument must be of type String or Hash'
     end
+
+    it "wont do anything if argument has not a video filename when a String is passed" do 
+      @sf.parse
+      @sf.replace 'foo'
+      @sf.raw_name.must_equal @output.raw_name
+    end
   end
  
   describe "when asked if it is a video file" do
     before do 
-      @sf = ShowFeature::Parser.new(@show)
+      @sf = ShowFeature::Processor.new(@show)
     end
     it "must be true or false" do 
       assert_block do 
-        [TrueClass,FalseClass].any? {|elt| @sf.video_file?.instance_of? elt}
+        [TrueClass,FalseClass].any? {|elt| @sf.video_file_type?.instance_of? elt}
       end
     end
   end

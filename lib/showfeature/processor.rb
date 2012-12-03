@@ -4,19 +4,28 @@ require 'mime/types'
 
 module ShowFeature
   
-  # The parser class is the one in charge of 
-  class Parser
-    #attr_accessor
+  # The main processor class is in charge of the parsing of tv show filename
+  class Processor
+    
     attr_reader :id, :name, :team, :episode, :season, :raw_name, :parsed
-
+    
+    # Pattern used for the parsing process
     PATTERN = /(^[\w\.\(\)]+)\.(\d{3}|s?\d{1,2}[ex]?\d{2})\..*-(.*)\.[\d\w]{3}$/i
     
-    
-    def initialize(str = "")
-      @raw_name = str
+    ## 
+    # Creates a new Processor instance for +raw_name+ parsing
+    # 
+    # An ArgumentError is raised if +raw_name+'s mime type does not
+    # match the type of a video file
+    def initialize(raw_name)
+      raise ShowFeature::ArgumentError, 'argument does not match a video file type' unless
+        ShowFeature::Processor.video_file_type? raw_name
+      @raw_name = raw_name
       @parsed = false
     end
     
+    ##
+    # Parses the tv show filename looking for relevant element
     def parse
       proc = Proc.new do |position, proc|
         tmp = @raw_name[PATTERN,position]
@@ -29,29 +38,42 @@ module ShowFeature
       @parsed = true
     end
 
+    ##
+    # Checks if the tv show filename has already been parsed
     def parsed?
       @parsed
     end
 
+    ##
+    # Returns hash filled with all parsed element
     def to_hsh
       hash = Hash.new
-      hash.merge( { :name =>@name, 
+      hash.merge!( { :name =>@name, 
                     :season => @season,
                     :episode => @episode,
                     :team => @team } ) unless [@name,@season,@episode, @team].all? {|x| x.eql?nil}
       hash
     end
     
-    def video_file?
+    ##
+    # Checks if +str+'s mime type matches a video file type
+    def self.video_file_type?(str)
+      MIME::Types.of(str).any? do |x| x.to_s =~/^video/ end
+    end
+
+    ##
+    # Checks if the mime type of the current processed show matches a video file type
+    def video_file_type?
       MIME::Types.of(@raw_name).any? do |x| x.to_s =~/^video/ end
     end
+    
     
     def replace(arg)
       raise ShowFeature::TypeError, 'argument must be of type String or Hash' unless 
         [String, Hash].any?{|type| arg.kind_of? type}
       raise ShowFeature::NotParsedError, 'showfeature cannot complete replace if show is not parsed' unless parsed?
       if arg.kind_of? String
-        @raw_name = arg
+        @raw_name = arg if ShowFeature::Processor.video_file_type?(arg)
       else
         hash = {
           :name =>@name, 
