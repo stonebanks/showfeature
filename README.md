@@ -6,10 +6,12 @@ was downloaded
 
 # Usage
 
-  require 'showfeature'
-  sf = ShowFeature::Parser.new
-  sf.parse('foo.125.x264-bar.mkv')
-  puts sf.to_hsh
+```ruby
+require 'showfeature'
+sf = ShowFeature::Processor.new('foo.125.x264-bar.mkv')
+sf.parse
+puts sf.to_hsh
+```
 
 **Author :** Allan Seymour  
 **Version :** 0.0.1         
