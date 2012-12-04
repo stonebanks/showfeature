@@ -10,11 +10,11 @@ was downloaded
 require 'showfeature'
 sf = ShowFeature::Processor.new('foo.125.x264-bar.mkv')
 sf.parse
-puts sf.to_hsh
+puts sf.to_hsh # prints {:name=>"foo", :season=>"01", :episode=>"05", :team=>"bar"}
 ```
 
 **Author :** Allan Seymour  
-**Version :** 0.1.0         
+**Version :** 0.1.1         
 **Release Date :** December 04, 2012             
 **Copyright :** MIT License        
 

@@ -14,4 +14,6 @@ Gem::Specification.new do |spec|
   spec.test_files = `git ls-files -- spec `.split("\n")
   spec.license = 'MIT'
   spec.has_rdoc = true
+  spec.add_dependency('mime-types', '>=1.19')
+  spec.add_development_dependency('bundler')
 end
