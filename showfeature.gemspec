@@ -12,4 +12,6 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files`.split("\n")
   spec.required_ruby_version = '>= 1.9.1'
   spec.test_files = `git ls-files -- spec `.split("\n")
+  spec.license = 'MIT'
+  spec.has_rdoc = true
 end
