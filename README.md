@@ -14,7 +14,7 @@ puts sf.to_hsh
 ```
 
 **Author :** Allan Seymour  
-**Version :** 0.0.1         
-**Release Date :** December 03, 2012             
+**Version :** 0.1.0         
+**Release Date :** December 04, 2012             
 **Copyright :** MIT License        
 
