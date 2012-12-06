@@ -37,7 +37,7 @@ describe ShowFeature::Processor do
     result = lambda{ ShowFeature::Processor.new('show')}
     result.must_raise ShowFeature::ArgumentError
     error = result.call rescue $!
-    error.message.must_equal 'argument does not match a video file type'   
+    error.message.must_equal 'show does not match a video or subtitle file type'   
   end
 
 
@@ -52,8 +52,8 @@ describe ShowFeature::Processor do
     it "must filled the hash correctly " do
       @sf.parse
       @sf.to_hsh.must_equal({ :name => @output.name.gsub('.', ' '),
-        :season => @output.season,
-        :episode => @output.episode,
+        :season => "%02d" % @output.season,
+        :episode => "%02d" % @output.episode,
         :team => @output.team })
     end
     it "must return an empty hash if showfeature is not parsed yet" do
@@ -130,6 +130,18 @@ describe ShowFeature::Processor do
       assert_block do 
         [TrueClass,FalseClass].any? {|elt| @sf.video_file_type?.instance_of? elt}
       end
+    end
+    it "must be true" do 
+       @sf.video_file_type?.must_equal true
+    end
+  end
+
+  describe "when asked if it is a subtitles file" do
+    before do 
+      @sf = ShowFeature::Processor.new("foo.s01e05.x264-bar.srt")
+    end
+    it "must be true" do 
+      @sf.subtitles_file_type?.must_equal true
     end
   end
 

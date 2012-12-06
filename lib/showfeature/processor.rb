@@ -18,8 +18,8 @@ module ShowFeature
     # An ArgumentError is raised if +raw_name+'s mime type does not
     # match the type of a video file
     def initialize(raw_name)
-      raise ShowFeature::ArgumentError, 'argument does not match a video file type' unless
-        ShowFeature::Processor.video_file_type? raw_name
+      raise ShowFeature::ArgumentError, "#{raw_name} does not match a video or subtitle file type" unless
+        [:video_file_type?, :subtitles_file_type?].any? {|f| ShowFeature::Processor.send f,raw_name }
       @raw_name = raw_name
       @parsed = false
     end
@@ -31,7 +31,7 @@ module ShowFeature
         tmp = @raw_name[PATTERN,position]
         tmp.nil? ? nil : proc.call(tmp)
       end
-      @name = proc.call(1, lambda{|x| x.downcase.tr_s('.',' ')})
+      @name = proc.call(1, lambda{|x| x.downcase.gsub('.',' ')})
       @season = proc.call(2, lambda{|x| "%02d" % x[/(\d+).?(\d{2}$)/,1].to_i})
       @episode = proc.call(2, lambda{|x| "%02d" % x[/(\d+).?(\d{2}$)/,2].to_i})
       @team = proc.call(3, lambda{|x| x.downcase})
@@ -67,13 +67,28 @@ module ShowFeature
       MIME::Types.of(@raw_name).any? do |x| x.to_s =~/^video/ end
     end
     
+    ##
+    # Checks if +str+'s mime type matches a subtitles file type
+    def self.subtitles_file_type?(str)
+      (str =~ /\.(srt|sub)$/) ? true : false
+    end
+
+    ##
+    # Checks if the mime type of the current processed show matches a subtitles file type
+    def subtitles_file_type?
+      (@raw_name =~ /\.(srt|sub)$/) ? true : false
+    end
     
     def replace(arg)
       raise ShowFeature::TypeError, 'argument must be of type String or Hash' unless 
         [String, Hash].any?{|type| arg.kind_of? type}
       raise ShowFeature::NotParsedError, 'showfeature cannot complete replace if show is not parsed' unless parsed?
       if arg.kind_of? String
-        @raw_name = arg if ShowFeature::Processor.video_file_type?(arg)
+        if video_file_type?
+          @raw_name = arg if ShowFeature::Processor.video_file_type?(arg)
+        elsif subtitle_file_type?
+          @raw_name = arg if ShowFeature::Processor.subtitles_file_type?(arg)
+        end
       else
         hash = {
           :name =>@name, 
