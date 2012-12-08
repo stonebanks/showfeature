@@ -7,7 +7,7 @@ module ShowFeature
   # The main processor class is in charge of the parsing of tv show filename
   class Processor
     
-    attr_reader :id, :name, :team, :episode, :season, :raw_name, :parsed
+    attr_reader :name, :team, :episode, :season, :raw_name, :parsed
     
     # Pattern used for the parsing process
     PATTERN = /(^[\w\.\(\)]+)\.(\d{3}|s?\d{1,2}[ex]?\d{2})\..*-(.*)\.[\d\w]{3}$/i
