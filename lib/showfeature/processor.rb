@@ -10,7 +10,7 @@ module ShowFeature
     attr_reader :name, :team, :episode, :season, :raw_name, :parsed
     
     # Pattern used for the parsing process
-    PATTERN = /(^[\w\.\(\)]+)\.(\d{3}|s?\d{1,2}[ex]?\d{2})\..*-(.*)\.[\d\w]{3}$/i
+    PATTERN = /(^[\w\.\(\)-]+)\.(\d{3}|s?\d{1,2}[ex]?\d{2})\..*-(.*)\.[\d\w]{3}$/i
     
     ## 
     # Creates a new Processor instance for +raw_name+ parsing
@@ -81,9 +81,9 @@ module ShowFeature
     
     def replace(arg)
       raise ShowFeature::TypeError, 'argument must be of type String or Hash' unless 
-        [String, Hash].any?{|type| arg.kind_of? type}
+        [String, Hash].any?{|type| arg.is_a? type}
       raise ShowFeature::NotParsedError, 'showfeature cannot complete replace if show is not parsed' unless parsed?
-      if arg.kind_of? String
+      if arg.is_a? String
         if video_file_type?
           @raw_name = arg if ShowFeature::Processor.video_file_type?(arg)
         elsif subtitle_file_type?

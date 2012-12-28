@@ -40,7 +40,6 @@ describe ShowFeature::Processor do
     error.message.must_equal 'show does not match a video or subtitle file type'   
   end
 
-
   describe "when asked to be hashed" do 
     before do 
       @sf = ShowFeature::Processor.new(@show)

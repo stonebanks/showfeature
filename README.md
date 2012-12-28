@@ -69,7 +69,7 @@ system "tree"
 ```
 
 **Author :** Allan Seymour  
-**Version :** 0.1.2         
-**Release Date :** December 06, 2012             
+**Version :** 0.1.3         
+**Release Date :** December 25, 2012             
 **Copyright :** MIT License        
 
